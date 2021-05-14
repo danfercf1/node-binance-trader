@@ -6,6 +6,9 @@ var pjson = require("../package.json")
 
 module.exports = envalid.cleanEnv(process.env, {
     BACKTEST_TEST_PAIR: envalid.str({ default: "BTCUSDT" }),
+    BALANCE_LONG: envalid.num({ default: 0.0002 }),
+    BALANCE_SPOT: envalid.num({ default: 0.0005 }),
+    BALANCE_SHORT: envalid.num({ default: 0.0002 }),
     BINANCE_API_KEY: envalid.str(),
     BINANCE_SECRET_KEY: envalid.str(),
     BVA_API_KEY: envalid.str(),
@@ -14,15 +17,19 @@ module.exports = envalid.cleanEnv(process.env, {
     DATABASE_INSERT_PAIR_HISTORY: envalid.bool({ default: true }),
     DATABASE_URL: envalid.str({
         default:
-            "DATABASE_URL=postgres://postgres:postgres@127.0.0.1:5432/postgres",
+            "postgres://postgres:postgres@127.0.0.1:5432/postgres",
     }),
     GMAIL_ADDRESS: envalid.str({ default: "" }),
     GMAIL_APP_PASSWORD: envalid.str({ default: "" }),
-    HOST: envalid.host({ default: "localhost" }),
+    HOST: envalid.str({ default: "localhost" }),
+    MONGO_URI: envalid.str({ default: "" }),
+    MONGO_INITDB_ROOT_USERNAME: envalid.str(),
+    MONGO_INITDB_ROOT_PASSWORD: envalid.str(),
     SERVER_PORT: envalid.port({
         default: 4000,
         desc: "The port to start the server on",
     }),
+    SLACK_WEBHOOK_URL: envalid.str({ default: ""}),
     STRATEGY_TIMEFRAME: envalid.str({ default: "15m" }),
     TELEGRAM_API_KEY: envalid.str({ default: "" }),
     TELEGRAM_RECEIVER_ID: envalid.str({ default: "" }),

@@ -1,0 +1,9 @@
+{
+    "apps": [
+        {
+            "name": "nbt-new-trader",
+            "script": "npm",
+            "args": "start"
+        }
+    ]
+}

@@ -21,11 +21,56 @@ services:
     ports:
       - "5432:5432"
     secrets:
-    - postgres_db
-    - postgres_password
-    - postgres_user
+      - postgres_db
+      - postgres_password
+      - postgres_user
+    restart: on-failure
+  
+  mongo:
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    image: mongo
+    volumes: 
+      - mongo_data:/data/db
+    ports: 
+      - "27017:27017"
+    restart: on-failure
+
+  pgadmin:
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    image: dpage/pgadmin4
+    volumes: 
+      - pgadmin_data:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    restart: on-failure
+  
+  mongoclient:
+    environment: 
+      MONGO_URL: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo/?retryWrites=true&w=majority
+    image: mongoclient/mongoclient
+    volumes: 
+      - mongoclient_data:/data/db
+    ports:
+      - "3000:3000"
+    depends_on: 
+      - mongo
+    links: 
+      - mongo
+    restart: on-failure
+  
 version: "3.7"
 volumes:
   postgres_data:
   # The database's data.
+    {}
+  pgadmin_data:
+  # The pgadmin's data.
+    {}
+  mongo_data:
+    {}
+  mongoclient_data:
     {}
