@@ -1202,26 +1202,26 @@ function buyLongTrade(
             )
         }
     } else {
-        const alt = pair.replace("BTC", "")
+        const alt = pair.replace("USDT", "")
 
-        if (minimums[alt + "BTC"].minQty) {
+        if (minimums[alt + "USDT"].minQty) {
             const buy_amount = new BigNumber(quantity)
             const btc_qty = buy_amount.dividedBy(price)
             const qty = bnb_client.roundStep(
                 btc_qty,
-                minimums[alt + "BTC"].stepSize
+                minimums[alt + "USDT"].stepSize
             )
-            console.log("Market Buy ==> " + qty + " - " + alt + "BTC")
+            console.log("Market Buy ==> " + qty + " - " + alt + "USDT")
             trading_qty[pair + stratid] = Number(qty)
 
             if (test_trades == true) {
-                emulateBuy(alt + "BTC", Number(qty), price)
+                emulateBuy(alt + "USDT", Number(qty), price)
                 returnQty = Number(qty * price)
             }
 
             //mgMarketBuy to marketBuy if spot test
             bnb_client.mgMarketBuy(
-                alt + "BTC",
+                alt + "USDT",
                 Number(qty),
                 (error, response) => {
                     if (error) {
