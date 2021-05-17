@@ -100,7 +100,7 @@ const MongoClient = require("mongodb").MongoClient
 const { IncomingWebhook } = require("@slack/webhook")
 const env = require("./env")
 
-const slack_url = env.SLACK_WEBHOOK_URL;
+const slack_url = env.SLACK_WEBHOOK_URL
 
 //////////////////////////////////////////////////////////////////////////////////
 const uri = `mongodb://${env.MONGO_INITDB_ROOT_USERNAME}:${env.MONGO_INITDB_ROOT_PASSWORD}@localhost/?retryWrites=true&w=majority`
@@ -155,12 +155,12 @@ var test_trades = false
 
 // Make it true to initialize your database, but only it for the first run (halt when done, change it to false and restart)
 var init_db = false
-var db;
+var db
 
 if (slack_url !== "") {
-    var webhook = new IncomingWebhook(slack_url);
-	
-	(async () => {
+    var webhook = new IncomingWebhook(slack_url)
+
+    ;(async () => {
         await webhook.send({
             text: "Bot started \n",
         })
@@ -170,15 +170,19 @@ if (slack_url !== "") {
 //}
 
 // Initialize connection once
-MongoClient.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true} ,(err, database) =>  {
-    if(err) throw err;
+MongoClient.connect(
+    uri,
+    { useNewUrlParser: true, useUnifiedTopology: true },
+    (err, database) => {
+        if (err) throw err
 
-    db = database;
+        db = database
 
-    app.listen(process.env.PORT || 8003, () =>
-        console.log("NBT auto trader running. NEW VERSION".grey)
-    )
-});
+        app.listen(process.env.PORT || 8003, () =>
+            console.log("NBT auto trader running. NEW VERSION".grey)
+        )
+    }
+)
 
 app.get("/", (req, res) => res.send(""))
 
@@ -380,11 +384,10 @@ socket.on("user_payload", async (data) => {
     }
 
     if (slack_url !== "") {
-       
-		$parsed = JSON.stringify(data)
-		await webhook.send({
-			text: `BVA Bot Payload \n ${$parsed}`,
-		})
+        $parsed = JSON.stringify(data)
+        await webhook.send({
+            text: `BVA Bot Payload \n ${$parsed}`,
+        })
     }
 
     console.log(
@@ -1010,13 +1013,13 @@ function buySpotWrapper(quantity, pair, price, score, stratname, stratid) {
                         " " +
                         pair +
                         " " +
-                        price;
-						
-					await webhook.send({
-						text: `${subject} \n ${
-							score ? "score: " + score : "score: NA"
-						}`,
-					});
+                        price
+
+                    await webhook.send({
+                        text: `${subject} \n ${
+                            score ? "score: " + score : "score: NA"
+                        }`,
+                    })
                 }
 
                 resolve(qtyOK)
@@ -1078,13 +1081,13 @@ function buyWrapper(quantity, pair, price, score, stratname, stratid) {
                         " " +
                         pair +
                         " " +
-                        price;
-						
-					await webhook.send({
-						text: `${subject} \n ${
-							score ? "score: " + score : "score: NA"
-						}`,
-					});
+                        price
+
+                    await webhook.send({
+                        text: `${subject} \n ${
+                            score ? "score: " + score : "score: NA"
+                        }`,
+                    })
                 }
 
                 resolve(qtyOK)
@@ -1143,13 +1146,13 @@ function sellWrapper(quantity, pair, price, score, stratname, stratid) {
                         "SELL_SIGNAL :: SELL TO EXIT LONG TRADE :: " +
                         stratname +
                         " " +
-                        pair;
-					
-					await webhook.send({
-						text: `${subject} \n ${
-							score ? "score: " + score : "score: NA"
-						}`,
-					});
+                        pair
+
+                    await webhook.send({
+                        text: `${subject} \n ${
+                            score ? "score: " + score : "score: NA"
+                        }`,
+                    })
                 }
 
                 resolve(qtyOK)
@@ -1204,6 +1207,7 @@ function buyLongTrade(
     } else {
         const alt = pair.replace("USDT", "")
 
+        minimums_alt = minimums[alt + "USDT"]
         if (minimums[alt + "USDT"].minQty) {
             const buy_amount = new BigNumber(quantity)
             const btc_qty = buy_amount.dividedBy(price)
@@ -1291,26 +1295,26 @@ function buySpotTrade(
             )
         }
     } else {
-        const alt = pair.replace("BTC", "")
+        const alt = pair.replace("USDT", "")
 
-        if (minimums[alt + "BTC"].minQty) {
+        if (minimums[alt + "USDT"].minQty) {
             const buy_amount = new BigNumber(quantity)
             const btc_qty = buy_amount.dividedBy(price)
             const qty = bnb_client.roundStep(
                 btc_qty,
-                minimums[alt + "BTC"].stepSize
+                minimums[alt + "USDT"].stepSize
             )
             console.log("Market Buy ==> " + qty + " - " + alt + "BTC")
             trading_qty[pair + stratid] = Number(qty)
 
             if (test_trades == true) {
-                emulateBuy(alt + "BTC", Number(qty), price)
+                emulateBuy(alt + "USDT", Number(qty), price)
                 returnQty = Number(qty * price)
             }
 
             //mgMarketBuy to marketBuy if spot test
             bnb_client.marketBuy(
-                alt + "BTC",
+                alt + "USDT",
                 Number(qty),
                 (error, response) => {
                     if (error) {
@@ -1423,9 +1427,8 @@ async function sellLongTrade(
 //{ SOCKET
 
 socket.on("buy_signal", async (signal) => {
-    
-	const payload = await getUserPayload();
-	console.log(signal);
+    const payload = await getUserPayload()
+    console.log(signal)
     const tresult = _.findIndex(payload.userPayload, (o) => {
         return o.stratid == signal.stratid
     })
@@ -1515,12 +1518,14 @@ socket.on("buy_signal", async (signal) => {
                     " " +
                     signal.pair +
                     " " +
-                    signal.price;
-				await webhook.send({
-					text: `${subject} \n ${
-						signal.score ? "score: " + signal.APIKEYscore : "score: NA"
-					}`,
-				});
+                    signal.price
+                await webhook.send({
+                    text: `${subject} \n ${
+                        signal.score
+                            ? "score: " + signal.APIKEYscore
+                            : "score: NA"
+                    }`,
+                })
             }
 
             if (signal.pair == "BTCUSDT") {
@@ -1705,12 +1710,12 @@ socket.on("sell_signal", async (signal) => {
                     " " +
                     signal.pair +
                     " " +
-                    signal.price;
-				await webhook.send({
-					text: `${subject} \n ${
-						signal.score ? "score: " + signal.score : "score: NA"
-					}`,
-				});
+                    signal.price
+                await webhook.send({
+                    text: `${subject} \n ${
+                        signal.score ? "score: " + signal.score : "score: NA"
+                    }`,
+                })
             }
 
             //////
@@ -2108,9 +2113,7 @@ async function saveUserPayload(data) {
 
 async function getUserPayload() {
     const dbo = db.db("update_data")
-    return await dbo.collection("userPayload").findOne(
-        { payload: "local" }
-    )
+    return await dbo.collection("userPayload").findOne({ payload: "local" })
 }
 
 async function uploadData() {
@@ -2414,7 +2417,7 @@ async function run() {
 
     await checkExchangeDebug()
 
-	if (init_db == true) {
+    if (init_db == true) {
         await initializeDatabases()
         init_db = false
     }
