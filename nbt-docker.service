@@ -1,0 +1,11 @@
+[Unit]
+Description=Docker service for NBT
+After=network.target docker.service
+[Service]
+Type=simple
+WorkingDirectory=/home/ubuntu/projects/node-binance-trader
+ExecStart=/usr/local/bin/docker-compose -f /home/ubuntu/projects/node-binance-trader/docker-compose.yml up
+ExecStop=/usr/local/bin/docker-compose -f /home/ubuntu/projects/node-binance-trader/docker-compose.yml down
+#Restart=always
+[Install]
+WantedBy=multi-user.target
