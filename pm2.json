@@ -3,7 +3,7 @@
         {
             "name": "nbt-new-trader",
             "script": "npm",
-            "args": "start"
+            "args": "run newtrader"
         }
     ]
 }
